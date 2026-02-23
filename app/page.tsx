@@ -14,6 +14,7 @@ interface Order {
   shippingPhone: string;
   shippingAddress: string;
   products?: Array<{ name: string; amount: number; price: string; rawPrice?: number }>;
+  cookie?: string;
 }
 
 export default function HomePage() {
@@ -23,6 +24,7 @@ export default function HomePage() {
   const [info, setInfo] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState({ total: 0, shipping: 0, done: 0, cancel: 0 });
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const calculateStats = (orders: Order[]) => {
@@ -73,7 +75,7 @@ export default function HomePage() {
     (async () => {
       const { data: rows, error } = await supabase
         .from('orders')
-        .select('order_id, tracking_number, tracking_info_description, status, shipping_name, shipping_phone, shipping_address, products')
+        .select('order_id, tracking_number, tracking_info_description, status, shipping_name, shipping_phone, shipping_address, products, cookie')
         .order('created_at', { ascending: false });
       if (error) {
         console.error('Load orders from DB:', error);
@@ -89,6 +91,7 @@ export default function HomePage() {
           shippingPhone: r.shipping_phone ?? '',
           shippingAddress: r.shipping_address ?? '',
           products: Array.isArray(r.products) ? r.products : [],
+          cookie: r.cookie ?? undefined,
         }));
         setOrders(list);
         setStats(calculateStats(list));
@@ -193,8 +196,9 @@ export default function HomePage() {
         const newStats = calculateStats(allOrders);
         setStats(newStats);
 
-        // Lưu toàn bộ trường vào bảng Supabase khi người dùng click Kiểm tra
+        // Lưu vào Supabase: đơn mới thì insert, đơn đã tồn tại (cùng order_id) thì update (cả cookie)
         let saveMsg = `✅ Tìm thấy ${allOrders.length} đơn hàng`;
+        const cookieUsed = cookieInput.trim();
         if (supabase) {
           const rows = allOrders.map((o) => ({
             order_id: o.orderId,
@@ -205,6 +209,7 @@ export default function HomePage() {
             shipping_phone: o.shippingPhone,
             shipping_address: o.shippingAddress,
             products: o.products ?? [],
+            cookie: cookieUsed || null,
           }));
           try {
             const { error: sbError } = await supabase.from('orders').upsert(rows, {
@@ -273,6 +278,94 @@ export default function HomePage() {
     setOrders(next);
     setStats(calculateStats(next));
     setInfo(next.length > 0 ? `Đã xóa đơn. Còn ${next.length} đơn.` : 'Đã xóa đơn. Danh sách trống.');
+  };
+
+  // Cập nhật dữ liệu một đơn: dùng cookie của đơn (hoặc cookie đang nhập) gọi API rồi cập nhật đơn đó
+  const handleUpdateOrder = async (order: Order) => {
+    const cookieToUse = (order.cookie || cookieInput.trim()).trim();
+    if (!cookieToUse) {
+      setError('Đơn chưa có cookie. Nhập cookie vào ô trên rồi bấm Cập nhật.');
+      return;
+    }
+    setUpdatingOrderId(order.orderId);
+    setError('');
+    setInfo('');
+    try {
+      const response = await fetch(
+        'https://us-central1-get-feedback-a0119.cloudfunctions.net/app/api/shopee/getOrderDetailsForCookie',
+        {
+          method: 'POST',
+          headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ cookies: [cookieToUse] }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Lỗi khi lấy đơn hàng');
+      }
+      let updatedOrder: Order | null = null;
+      if (data.allOrderDetails && Array.isArray(data.allOrderDetails)) {
+        for (const item of data.allOrderDetails) {
+          if (!item.orderDetails || !Array.isArray(item.orderDetails)) continue;
+          const detail = item.orderDetails.find((d: any) => (d.order_id || '') === order.orderId);
+          if (detail) {
+            updatedOrder = {
+              orderId: detail.order_id || '',
+              trackingNumber: detail.tracking_number || 'Chưa có',
+              trackingInfoDescription: detail.tracking_info_description || '',
+              status: detail.status,
+              shippingName: detail.address?.shipping_name || '',
+              shippingPhone: detail.address?.shipping_phone || '',
+              shippingAddress: detail.address?.shipping_address || '',
+              products: detail.product_info?.map((p: any) => ({
+                name: p.name || '',
+                amount: p.amount || 0,
+                price: formatPrice(p.item_price || 0),
+                rawPrice: p.item_price || 0,
+              })) || [],
+              cookie: cookieToUse,
+            };
+            break;
+          }
+        }
+      }
+      if (!updatedOrder) {
+        setInfo('Không tìm thấy đơn này trong dữ liệu trả về từ cookie.');
+        return;
+      }
+      if (supabase) {
+        const row = {
+          order_id: updatedOrder.orderId,
+          tracking_number: updatedOrder.trackingNumber || null,
+          tracking_info_description: updatedOrder.trackingInfoDescription || null,
+          status: updatedOrder.status ?? null,
+          shipping_name: updatedOrder.shippingName,
+          shipping_phone: updatedOrder.shippingPhone,
+          shipping_address: updatedOrder.shippingAddress,
+          products: updatedOrder.products ?? [],
+          cookie: cookieToUse,
+        };
+        const { error: sbError } = await supabase.from('orders').upsert([row], {
+          onConflict: 'order_id',
+          ignoreDuplicates: false,
+        });
+        if (sbError) {
+          setError('Lưu DB: ' + sbError.message);
+          return;
+        }
+      }
+      const nextList = orders.map((o) => (o.orderId === order.orderId ? updatedOrder! : o));
+      setOrders(nextList);
+      setStats(calculateStats(nextList));
+      setInfo(`Đã cập nhật đơn ${order.orderId}`);
+    } catch (e: any) {
+      setError(e?.message || 'Cập nhật thất bại');
+    } finally {
+      setUpdatingOrderId(null);
+    }
   };
 
   return (
@@ -366,13 +459,23 @@ export default function HomePage() {
                         <tr key={order.orderId || index} className="transition-all hover:bg-[rgba(124,92,252,0.06)] even:bg-[rgba(255,255,255,0.018)] group">
                           <td className="p-2.5 text-center text-[var(--text3)] font-semibold border-b border-[rgba(255,255,255,0.05)] sticky left-0 z-[1] w-12 min-w-[3rem] bg-[var(--bg)] group-even:bg-[rgba(255,255,255,0.018)] group-hover:bg-[rgba(124,92,252,0.06)] shadow-[4px_0_6px_rgba(0,0,0,0.08)]">{index + 1}</td>
                           <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap sticky left-12 z-[1] w-20 min-w-[5rem] bg-[var(--bg)] group-even:bg-[rgba(255,255,255,0.018)] group-hover:bg-[rgba(124,92,252,0.06)] shadow-[4px_0_6px_rgba(0,0,0,0.08)]">
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteOrder(order.orderId)}
-                              className="px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-[rgba(248,113,113,0.15)] text-[var(--red)] border border-[rgba(248,113,113,0.3)] hover:bg-[rgba(248,113,113,0.25)] transition-colors"
-                            >
-                              Xóa
-                            </button>
+                            <div className="flex flex-col gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateOrder(order)}
+                                disabled={updatingOrderId === order.orderId}
+                                className="px-2 py-1 text-[10px] font-medium rounded-lg bg-[rgba(96,165,250,0.2)] text-[var(--blue)] border border-[rgba(96,165,250,0.35)] hover:bg-[rgba(96,165,250,0.3)] disabled:opacity-50 transition-colors"
+                              >
+                                {updatingOrderId === order.orderId ? '…' : 'Cập nhật'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteOrder(order.orderId)}
+                                className="px-2 py-1 text-[10px] font-medium rounded-lg bg-[rgba(248,113,113,0.15)] text-[var(--red)] border border-[rgba(248,113,113,0.3)] hover:bg-[rgba(248,113,113,0.25)] transition-colors"
+                              >
+                                Xóa
+                              </button>
+                            </div>
                           </td>
                           <td className="p-2.5 font-mono text-[var(--accent2)] cursor-pointer border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">{order.orderId || '—'}</td>
                           <td className="p-2.5 font-mono text-[var(--accent2)] cursor-pointer border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">
