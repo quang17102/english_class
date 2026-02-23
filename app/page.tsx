@@ -379,7 +379,7 @@ export default function HomePage() {
       <div className="relative z-[1] flex-1 flex flex-col items-center">
         <Navbar />
 
-        <main className="flex-1 w-full max-w-[900px] mx-auto px-3 sm:px-5 py-6 pb-15 flex flex-col">
+        <main className="flex-1 w-full max-w-[900px] lg:max-w-[1400px] xl:max-w-[1600px] mx-auto px-3 sm:px-5 py-6 pb-15 flex flex-col">
           {/* Hero */}
           <div className="hero text-center mb-4.5">
             <h1 className="text-[clamp(20px,4vw,32px)] font-extrabold tracking-[-0.8px] leading-tight mb-0.5">
@@ -438,21 +438,21 @@ export default function HomePage() {
             <>
               <Stats total={stats.total} shipping={stats.shipping} done={stats.done} cancel={stats.cancel} />
 
-              {/* Sheet View */}
-              <div className="overflow-x-auto rounded-[14px] border border-[var(--card-border)] bg-[rgba(255,255,255,0.02)] mb-4">
-                  <table className="w-full border-collapse text-xs min-w-[1800px]">
+              {/* Sheet View: desktop full width không scroll, mobile scroll ngang */}
+              <div className="rounded-[14px] border border-[var(--card-border)] bg-[rgba(255,255,255,0.02)] mb-4 overflow-x-auto lg:overflow-visible">
+                  <table className="w-full border-collapse text-xs min-w-[1800px] lg:min-w-0 lg:table-fixed">
                     <thead>
                       <tr>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 left-0 z-[2] w-12 min-w-[3rem] whitespace-nowrap">STT</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 left-12 z-[3] w-20 min-w-[5rem] whitespace-nowrap shadow-[4px_0_6px_rgba(0,0,0,0.2)]">Thao tác</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Mã đơn</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">MVĐ</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Trạng thái</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Shop</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Người nhận</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">SĐT</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Địa chỉ</th>
-                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] whitespace-nowrap">Tổng tiền</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 left-0 z-[2] w-12 min-w-[3rem] lg:w-[3%] whitespace-nowrap">STT</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 left-12 z-[3] w-20 min-w-[5rem] lg:w-[8%] whitespace-nowrap shadow-[4px_0_6px_rgba(0,0,0,0.2)]">Thao tác</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[10%] whitespace-nowrap">Mã đơn</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[11%] whitespace-nowrap">MVĐ</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[14%] whitespace-nowrap">Trạng thái</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[6%] whitespace-nowrap">Shop</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[10%] whitespace-nowrap">Người nhận</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[9%] whitespace-nowrap">SĐT</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[19%] whitespace-nowrap">Địa chỉ</th>
+                        <th className="bg-gradient-to-br from-[#1565c0] to-[#1a73e8] text-white p-3 text-[11px] font-bold uppercase tracking-[0.5px] sticky top-0 z-[2] lg:w-[10%] whitespace-nowrap">Tổng tiền</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -482,13 +482,13 @@ export default function HomePage() {
                           <td className="p-2.5 font-mono text-[var(--accent2)] cursor-pointer border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">
                             {order.trackingNumber && order.trackingNumber !== 'Chưa có' && order.trackingNumber !== 'Không xác định' ? order.trackingNumber : 'Chưa có'}
                           </td>
-                          <td className="p-2.5 font-semibold border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap text-[var(--text2)]">
+                          <td className="p-2.5 font-semibold border-b border-[rgba(255,255,255,0.05)] text-[var(--text2)] lg:max-w-0 lg:truncate" title={order.trackingInfoDescription || ''}>
                             {order.trackingInfoDescription || '—'}
                           </td>
                           <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">—</td>
-                          <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">{order.shippingName || '—'}</td>
+                          <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap lg:truncate" title={order.shippingName || ''}>{order.shippingName || '—'}</td>
                           <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">{order.shippingPhone || '—'}</td>
-                          <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] max-w-[300px] min-w-[160px]">{order.shippingAddress || '—'}</td>
+                          <td className="p-2.5 border-b border-[rgba(255,255,255,0.05)] lg:max-w-0 lg:truncate" title={order.shippingAddress || ''}>{order.shippingAddress || '—'}</td>
                           <td className="p-2.5 text-[var(--orange)] font-bold text-[13px] border-b border-[rgba(255,255,255,0.05)] whitespace-nowrap">
                             {order.products && order.products.length > 0 
                               ? (() => {
