@@ -1,6 +1,112 @@
 @import "tailwindcss";
 
-/* Bạn có thể thêm style global ở đây nếu cần */
+:root {
+  /* Dark theme colors */
+  --bg: #0a0a0f;
+  --bg-secondary: #0f0f15;
+  
+  /* Text colors - từ sáng đến tối */
+  --text: #ffffff;
+  --text2: #b4b4c0;
+  --text3: #6b6b7a;
+  
+  /* Accent colors */
+  --accent: #7c5cfc;
+  --accent2: #9b7dff;
+  
+  /* Card colors */
+  --card: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  
+  /* Status colors */
+  --blue: #60a5fa;
+  --green: #22c55e;
+  --red: #f87171;
+  --orange: #fb923c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  @apply bg-slate-50 text-slate-800;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Aurora backgrounds */
+.aurora {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at top, rgba(124, 92, 252, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at bottom right, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
+              radial-gradient(ellipse at bottom left, rgba(34, 197, 94, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: aurora 20s ease-in-out infinite;
+}
+
+.aurora-2 {
+  background: radial-gradient(ellipse at top left, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
+              radial-gradient(ellipse at center, rgba(124, 92, 252, 0.12) 0%, transparent 50%);
+  animation: aurora 25s ease-in-out infinite reverse;
+}
+
+.aurora-3 {
+  background: radial-gradient(ellipse at bottom right, rgba(96, 165, 250, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at top right, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+  animation: aurora 30s ease-in-out infinite;
+}
+
+@keyframes aurora {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+    opacity: 1;
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+    opacity: 0.9;
+  }
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.search-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
