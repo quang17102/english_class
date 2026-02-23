@@ -391,24 +391,26 @@ export default function HomePage() {
           </div>
 
           {/* Search Card */}
-          <div className="search-card glass p-3 sm:p-4 mb-1 transition-all focus-within:border-[rgba(124,92,252,0.35)] focus-within:shadow-[0_0_24px_rgba(124,92,252,0.12)]">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3 relative">
-              <div className="absolute left-4 top-3.5 sm:top-1/2 sm:-translate-y-1/2 text-[var(--text3)] pointer-events-none z-10">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 sm:w-5 sm:h-5">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
+          <div className="search-card glass p-4 sm:p-5 mb-1 transition-all focus-within:border-[rgba(124,92,252,0.35)] focus-within:shadow-[0_0_24px_rgba(124,92,252,0.12)]">
+            <div className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4 relative">
+              <div className="flex-1 min-w-0 flex items-center gap-3 rounded-lg bg-transparent border border-transparent focus-within:border-[rgba(124,92,252,0.2)]">
+                <span className="text-[var(--text3)] shrink-0 flex items-center justify-center w-10 h-10" aria-hidden>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  value={cookieInput}
+                  onChange={(e) => setCookieInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Dán SPC_ST cookie..."
+                  autoComplete="off"
+                  disabled={loading}
+                  className="flex-1 min-w-0 min-h-[3rem] sm:min-h-[3.25rem] bg-transparent border-none outline-none px-0 py-3.5 sm:py-4 text-base text-[var(--text)] font-inherit disabled:opacity-50 placeholder:text-[var(--text3)]"
+                />
               </div>
-              <input
-                type="text"
-                value={cookieInput}
-                onChange={(e) => setCookieInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Dán SPC_ST cookie..."
-                autoComplete="off"
-                disabled={loading}
-                className="flex-1 bg-transparent border-none outline-none px-4 py-3 sm:py-3.5 pl-11 sm:pl-12 text-sm sm:text-base text-[var(--text)] font-inherit min-w-0 disabled:opacity-50 placeholder:text-[var(--text3)]"
-              />
               <div className="flex sm:ml-2">
                 <button
                   onClick={handleCheck}
