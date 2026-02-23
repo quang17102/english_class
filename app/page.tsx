@@ -118,7 +118,6 @@ export default function HomePage() {
     setLoading(true);
     setError('');
     setInfo('');
-    setOrders([]);
 
     try {
       const response = await fetch(
@@ -191,14 +190,20 @@ export default function HomePage() {
         return;
       }
 
-      if (allOrders.length > 0) {
-        setOrders(allOrders);
-        const newStats = calculateStats(allOrders);
-        setStats(newStats);
+      const cookieUsed = cookieInput.trim();
+      // Gộp với danh sách hiện tại: đơn từ API (thêm/cập nhật + cookie) lên trước, giữ các đơn cũ không nằm trong response
+      setOrders((prev) => {
+        const fromApi = allOrders.map((o) => ({ ...o, cookie: cookieUsed }));
+        const updatedIds = new Set(fromApi.map((o) => o.orderId));
+        const kept = prev.filter((o) => !updatedIds.has(o.orderId));
+        const merged = [...fromApi, ...kept];
+        setStats(calculateStats(merged));
+        return merged;
+      });
 
-        // Lưu vào Supabase: đơn mới thì insert, đơn đã tồn tại (cùng order_id) thì update (cả cookie)
-        let saveMsg = `✅ Tìm thấy ${allOrders.length} đơn hàng`;
-        const cookieUsed = cookieInput.trim();
+      if (allOrders.length > 0) {
+        // Lưu vào Supabase: đơn mới thì insert, đơn đã tồn tại thì update (cả cookie)
+        let saveMsg = `✅ Thêm ${allOrders.length} đơn từ cookie · Đã gộp vào danh sách`;
         if (supabase) {
           const rows = allOrders.map((o) => ({
             order_id: o.orderId,
@@ -220,7 +225,7 @@ export default function HomePage() {
               console.error('Supabase save orders:', sbError);
               saveMsg += ` (lưu DB lỗi: ${sbError.message})`;
             } else {
-              saveMsg += ' · Đã lưu vào danh sách';
+              saveMsg += ' · Đã lưu DB';
             }
           } catch (e: any) {
             console.error('Supabase save orders:', e);
@@ -230,13 +235,11 @@ export default function HomePage() {
               : ` (lưu DB lỗi: ${e?.message || 'Unknown'})`;
           }
         } else {
-          saveMsg += ' (chưa cấu hình Supabase: đặt NEXT_PUBLIC_SUPABASE_URL và NEXT_PUBLIC_SUPABASE_ANON_KEY trong .env.local)';
+          saveMsg += ' (chưa cấu hình Supabase)';
         }
         setInfo(saveMsg);
       } else {
-        setInfo('✅ Không có đơn hàng nào');
-        setOrders([]);
-        setStats({ total: 0, shipping: 0, done: 0, cancel: 0 });
+        setInfo('Cookie này không trả về đơn nào. Danh sách hiện tại giữ nguyên.');
       }
     } catch (err: any) {
       // Don't set error if request was aborted
@@ -244,8 +247,6 @@ export default function HomePage() {
         return;
       }
       setError(err.message || 'Có lỗi xảy ra khi kiểm tra đơn hàng');
-      setOrders([]);
-      setStats({ total: 0, shipping: 0, done: 0, cancel: 0 });
     } finally {
       // Only update loading state if this is still the current request
       if (!abortController.signal.aborted) {
