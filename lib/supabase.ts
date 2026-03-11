@@ -23,6 +23,7 @@ export type Order = {
   products: string;
   note?: string;
   acc?: string;
+  mvd?: string;
   order_time?: string;
   status: 'chưa đặt' | 'đã đặt' | 'đang vận chuyển' | 'thành công' | 'đã hủy';
   created_at?: string;

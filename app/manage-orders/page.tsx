@@ -28,6 +28,7 @@ export default function ManageOrdersPage() {
     products: '',
     note: '',
     acc: '',
+    mvd: '',
     order_time: '',
     status: 'chưa đặt' as Order['status'],
   });
@@ -67,6 +68,7 @@ export default function ManageOrdersPage() {
       products: '',
       note: '',
       acc: '',
+      mvd: '',
       order_time: '',
       status: 'chưa đặt',
     });
@@ -148,6 +150,7 @@ export default function ManageOrdersPage() {
       products: order.products || '',
       note: order.note || '',
       acc: order.acc || '',
+      mvd: order.mvd || '',
       order_time: orderTime,
       status: order.status,
     });
@@ -188,6 +191,7 @@ export default function ManageOrdersPage() {
         products: formData.products.trim(),
         note: formData.note.trim() || null,
         acc: formData.acc.trim() || null,
+        mvd: formData.mvd.trim() || null,
         status: formData.status,
       };
 
@@ -603,6 +607,9 @@ export default function ManageOrdersPage() {
                     <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-[60px]">
                       ACC
                     </th>
+                    <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[100px] max-w-[150px]">
+                      MVD
+                    </th>
                     <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[200px] max-w-[300px]">
                       Ghi chú
                     </th>
@@ -660,6 +667,9 @@ export default function ManageOrdersPage() {
                         )}
                       </td>
                       <td className="px-3 py-3 text-sm text-gray-600">
+                        {order.mvd || '—'}
+                      </td>
+                      <td className="px-3 py-3 text-sm text-gray-600">
                         <div 
                           className="truncate max-w-[300px] cursor-help" 
                           title={order.note && order.note.length > 50 ? order.note : ''}
@@ -671,19 +681,24 @@ export default function ManageOrdersPage() {
                         {formatDate(order.order_time)}
                       </td>
                       <td className="px-3 py-3 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-2">
+                        <div className="flex gap-3 items-center justify-center">
                           <button
                             onClick={() => handleEdit(order)}
-                            className="text-[#3b82f6] hover:text-[#2563eb] font-medium transition-colors"
+                            className="text-[#3b82f6] hover:text-[#2563eb] transition-colors p-1.5 rounded hover:bg-blue-50"
+                            title="Sửa đơn hàng"
                           >
-                            Sửa
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
                           </button>
-                          <span className="text-gray-300">|</span>
                           <button
                             onClick={() => handleDeleteClick(order.id!)}
-                            className="text-[#ef4444] hover:text-[#dc2626] font-medium transition-colors"
+                            className="text-[#ef4444] hover:text-[#dc2626] transition-colors p-1.5 rounded hover:bg-red-50"
+                            title="Xóa đơn hàng"
                           >
-                            Xóa
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
                       </td>
@@ -785,6 +800,19 @@ export default function ManageOrdersPage() {
                             onChange={(e) => setFormData({ ...formData, acc: e.target.value })}
                             className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b35]/20 focus:border-[#ff6b35] transition-all bg-white text-gray-900 placeholder:text-gray-400"
                             placeholder="Nhập ACC"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-900 mb-1.5">
+                            MVD
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.mvd}
+                            onChange={(e) => setFormData({ ...formData, mvd: e.target.value })}
+                            className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff6b35]/20 focus:border-[#ff6b35] transition-all bg-white text-gray-900 placeholder:text-gray-400"
+                            placeholder="Nhập MVD"
                           />
                         </div>
 
