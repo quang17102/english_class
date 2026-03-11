@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-// Chỉ dùng Supabase khi URL và key hợp lệ (không phải placeholder)
+// Chỉ dùng Supabase khi URL và key hợp lệ
 const isConfigured =
   supabaseUrl.length > 0 &&
   supabaseAnonKey.length > 0 &&
@@ -16,16 +16,25 @@ export const supabase: SupabaseClient | null = isConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-export type DbOrder = {
+export type Order = {
   id?: string;
-  order_id: string;
-  tracking_number: string | null;
-  tracking_info_description: string | null;
-  status: number | null;
-  shipping_name: string;
-  shipping_phone: string;
-  shipping_address: string;
-  products: Array<{ name: string; amount: number; price: string; rawPrice?: number }>;
+  customer_name: string;
+  address: string;
+  products: string;
+  note?: string;
+  acc?: string;
+  order_time?: string;
+  status: 'chưa đặt' | 'đã đặt' | 'đang vận chuyển' | 'thành công' | 'đã hủy';
   created_at?: string;
   updated_at?: string;
 };
+
+export type AccData = {
+  id?: string;
+  acc_content: string;
+  cookie?: string;
+  mailpass?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+

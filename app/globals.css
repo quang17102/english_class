@@ -1,112 +1,226 @@
 @import "tailwindcss";
 
 :root {
-  /* Dark theme colors */
-  --bg: #0a0a0f;
-  --bg-secondary: #0f0f15;
+  /* White and Orange theme */
+  --bg: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-card: #ffffff;
   
-  /* Text colors - từ sáng đến tối */
-  --text: #ffffff;
-  --text2: #b4b4c0;
-  --text3: #6b6b7a;
+  /* Text colors */
+  --text: #1a1a1a;
+  --text-secondary: #666666;
+  --text-light: #999999;
+  
+  /* Orange colors */
+  --orange: #ff6b35;
+  --orange-light: #ff8c5a;
+  --orange-dark: #e55a2b;
+  --orange-bg: #fff5f2;
   
   /* Accent colors */
-  --accent: #7c5cfc;
-  --accent2: #9b7dff;
+  --accent: #ff6b35;
+  --accent-hover: #ff8c5a;
   
-  /* Card colors */
-  --card: rgba(255, 255, 255, 0.03);
-  --card-border: rgba(255, 255, 255, 0.08);
+  /* Border colors */
+  --border: #e5e5e5;
+  --border-light: #f0f0f0;
   
   /* Status colors */
-  --blue: #60a5fa;
-  --green: #22c55e;
-  --red: #f87171;
-  --orange: #fb923c;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 html, body {
   width: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 body {
-  background: var(--bg);
+  background: var(--bg-secondary);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
-/* Aurora backgrounds */
-.aurora {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Card styles */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Modal/Popup styles */
+.modal-card {
+  background: linear-gradient(to bottom, #ffffff 0%, #fff5f2 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(255, 107, 53, 0.15);
+}
+
+/* Button styles */
+.btn-primary {
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.btn-danger {
+  background: var(--error);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* Input styles */
+.input {
   width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at top, rgba(124, 92, 252, 0.15) 0%, transparent 50%),
-              radial-gradient(ellipse at bottom right, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
-              radial-gradient(ellipse at bottom left, rgba(34, 197, 94, 0.08) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-  animation: aurora 20s ease-in-out infinite;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: white;
+  color: var(--text);
 }
 
-.aurora-2 {
-  background: radial-gradient(ellipse at top left, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
-              radial-gradient(ellipse at center, rgba(124, 92, 252, 0.12) 0%, transparent 50%);
-  animation: aurora 25s ease-in-out infinite reverse;
+.input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
-.aurora-3 {
-  background: radial-gradient(ellipse at bottom right, rgba(96, 165, 250, 0.08) 0%, transparent 50%),
-              radial-gradient(ellipse at top right, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
-  animation: aurora 30s ease-in-out infinite;
+.input::placeholder {
+  color: var(--text-light);
 }
 
-@keyframes aurora {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.8;
+/* Select styles */
+.select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* Textarea styles */
+.textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+  background: white;
+  color: var(--text);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-chưa-đặt {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-đã-đặt {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.status-đang-vận-chuyển {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.status-thành-công {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.status-đã-hủy {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Animation for copy alert */
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
   }
-  33% {
-    transform: translate(30px, -30px) scale(1.1);
+  to {
+    transform: translateX(0);
     opacity: 1;
   }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-    opacity: 0.9;
-  }
 }
 
-/* Glass morphism */
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.search-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
 }

@@ -1,10 +1,9 @@
-// app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "LinguaVerse – Learn English Online",
-  description: "Grammar, vocabulary, listening and reading tests with instant feedback.",
+  title: "App",
+  description: "",
 };
 
 export default function RootLayout({
